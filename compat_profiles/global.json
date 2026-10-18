@@ -1,0 +1,37 @@
+{
+  "id": "global",
+  "name": "Global",
+  "summary": "Test checklist for servers that run Global. Written without assuming any undocumented Global behavior. Status stays untested until you record a result from an authorized test.",
+  "checks": [
+    {
+      "id": "start",
+      "title": "Resource starts cleanly",
+      "how": "Start fmcc_control on your own test server with the anti-cheat product running. Record whether the product reports, blocks or silently ignores the resource, and whether any server console message appears."
+    },
+    {
+      "id": "api",
+      "title": "HTTP API reachable",
+      "how": "Run Diagnostics > Server status from this app. If the product filters inbound HTTP or resource endpoints, record exactly what happens."
+    },
+    {
+      "id": "client_events",
+      "title": "Client effects do not trigger actions",
+      "how": "Run Player > Restore health, Weapons > Give weapon and Vehicles > Spawn vehicle on a test player. Record whether the product kicks, flags or logs the player."
+    },
+    {
+      "id": "entities",
+      "title": "Entity spawns are tolerated",
+      "how": "Spawn vehicles through the app within the configured limit. Record whether the product treats server-authorized spawns as suspicious."
+    },
+    {
+      "id": "integrity",
+      "title": "Integrity baseline works beside the product",
+      "how": "Save and check an integrity baseline (Security > Save integrity baseline, then Check integrity). Record whether file reads from the resource conflict with the product."
+    },
+    {
+      "id": "restart",
+      "title": "Behavior after resource restart",
+      "how": "Restart fmcc_control and the anti-cheat resource in both orders. Record any ordering requirement you observe."
+    }
+  ]
+}
