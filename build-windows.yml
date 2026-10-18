@@ -1,0 +1,41 @@
+name: Build Windows exe
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt -r requirements-dev.txt
+      - name: Tests (Python; Lua tests run in the Linux job)
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: python -m pytest
+      - run: pyinstaller fmcc.spec --noconfirm --clean
+      - name: Start the packaged exe once (opens the window, then exits)
+        shell: pwsh
+        run: |
+          $p = Start-Process .\dist\FiveMControlCenter.exe -ArgumentList '--smoke' -Wait -PassThru
+          if ($p.ExitCode -ne 0) { throw "exe exited with code $($p.ExitCode)" }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FiveMControlCenter
+          path: dist/FiveMControlCenter.exe
+  linux-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: sudo apt-get update && sudo apt-get install -y lua5.4 libegl1 libgl1 libxkbcommon0 libdbus-1-3 libfontconfig1
+      - run: pip install -r requirements.txt pytest
+      - env:
+          QT_QPA_PLATFORM: offscreen
+        run: python -m pytest
